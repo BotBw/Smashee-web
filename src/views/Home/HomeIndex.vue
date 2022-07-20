@@ -1,15 +1,16 @@
 <template>
-  <ContentBar>About us</ContentBar>
+  <ContentBar>Home</ContentBar>
 </template>
 
 <script>
-import ContentBar from "../components/ContentBar.vue";
+import ContentBar from "../../components/ContentBar.vue";
 
 export default {
   components: {
     ContentBar
   }
-}</script>
+}
+</script>
 
 <style scoped>
 </style>

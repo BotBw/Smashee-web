@@ -1,9 +1,9 @@
 <template>
-  <ContentBar>About us</ContentBar>
+  <ContentBar>Matchmaking</ContentBar>
 </template>
 
 <script>
-import ContentBar from "../components/ContentBar.vue";
+import ContentBar from "../../components/ContentBar.vue";
 
 export default {
   components: {
