@@ -1,13 +1,13 @@
 <template>
-  <ContentBar>Matchmaking</ContentBar>
+    <PlayGround></PlayGround>
 </template>
 
 <script>
-import ContentBar from "../../components/ContentBar.vue";
+import PlayGround from "../../components/Matchmaking/PlayGround.vue";
 
 export default {
   components: {
-    ContentBar
+    PlayGround
   }
 }</script>
 
