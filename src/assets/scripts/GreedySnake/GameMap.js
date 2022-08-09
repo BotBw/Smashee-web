@@ -1,5 +1,6 @@
 import { GameObject } from "../GameObject";
 import { MapWall } from "./MapWall"
+import { Snake } from "./Snake";
 
 export default class GameMap extends GameObject {
   constructor(ctx, parent, mapType) {
@@ -7,28 +8,35 @@ export default class GameMap extends GameObject {
     this.ctx = ctx;
     this.parent = parent;
     this.pixel = 0;
-    // this.snake = new Snake(this.ctx, this);
+
     this.color_a = "#AAD751"; // green
     this.color_b = "#A2D149"; // green
 
     // default map settings
+    // row num and col num (it must satisfy (row + col) % 2 === 1)
     let row = 13;
-    let col = 13;
+    let col = 14;
+    // num of walls
     let wall_cnt = 40;
-    if(mapType === "small") {
+
+    if(mapType === GameMap.mapType.small) {
       row = 10;
-      col = 10;
+      col = 11;
       wall_cnt = 15;
-    } else if (mapType === "large") {
+    } else if (mapType === GameMap.mapType.large) {
       row = 20;
-      col = 20;
+      col = 21;
       wall_cnt = 150;
     }
     this.row = row;
     this.col = col;
     this.wall_cnt = wall_cnt;
+
     this.walls = [];
     this.timeout_cnt = 10000;
+    this.snakes = [new Snake(this, "#00CCFF", 1, 1, 3), new Snake(this, "#FF0066", this.row - 2, this.col - 2, 3)];
+    this.add_listening_event();
+    this.walls = this.generate_valid_walls();
   }
 
   generate_random_walls() {
@@ -55,8 +63,8 @@ export default class GameMap extends GameObject {
       let i = parseInt(this.row * Math.random());
       let j = parseInt(this.col * Math.random());
       if((i == 1 && j == 1) || (i == this.row - 2 && j == this.col - 2)) continue;
-      if(wall_cor[i][j] || wall_cor[this.row - j - 1][this.col - i - 1]) continue;
-      wall_cor[i][j] = wall_cor[this.row - j - 1][this.col - i - 1] = true;
+      if(wall_cor[i][j] || wall_cor[this.row - i - 1][this.col - j - 1]) continue;
+      wall_cor[i][j] = wall_cor[this.row - i - 1][this.col - j - 1] = true;
       cnt++;
     }
     return wall_cor;
@@ -91,24 +99,69 @@ export default class GameMap extends GameObject {
   
   generate_valid_walls() {
     var wall_cor;
+    let walls = [];
     let timeout_cnt = 0;
     do {
       wall_cor = this.generate_random_walls();
       timeout_cnt++;
     } while(!this.check_walls(wall_cor) && timeout_cnt < this.timeout_cnt);
 
-    console.log(timeout_cnt);
-
     for(let i = 0; i < this.row; i++) {
       for(let j = 0; j < this.col; j++) {
         if(wall_cor[i][j]) 
-          this.walls.push(new MapWall(i, j, this));
+          walls.push(new MapWall(i, j, this));
       }
     }
+    return walls;
   }
 
-  start() {
-    this.generate_valid_walls();
+  check_valid(cell) {
+    for (const wall of this.walls) {
+      if(wall.x === cell.x && wall.y === cell.y) return false;
+    }
+    for(const snake of this.snakes) {
+      let n = snake.cells.length;
+      if(!snake.check_longer_snake()) n--;
+      for(let i = 0; i < n; i++) {
+        const c = snake.cells[i];
+        if(c.x === cell.x && c.y === cell.y) return false;
+      }
+    }
+    return true;
+  }
+
+
+  start() {}
+
+  add_listening_event() {
+    this.ctx.canvas.focus();
+    const mapper = e => {
+      if(e.key === 'w') this.snakes[0].set_dir(0);
+      else if(e.key === 'd') this.snakes[0].set_dir(1);
+      else if(e.key === 's') this.snakes[0].set_dir(2);
+      else if(e.key === 'a') this.snakes[0].set_dir(3);
+      else if(e.key === 'ArrowUp') this.snakes[1].set_dir(0);
+      else if(e.key === 'ArrowRight') this.snakes[1].set_dir(1);
+      else if(e.key === 'ArrowDown') this.snakes[1].set_dir(2);
+      else this.snakes[1].set_dir(3);
+    };
+    this.ctx.canvas.addEventListener("keydown", mapper);
+  }
+
+  check_snakes_ready() {
+    for(let snake of this.snakes) {
+      // snake died or is moving (not idling)
+      if(snake.state !== Snake.StateEnum.idling) return false;
+      // next direction hasn't been set
+      if(snake.dir === -1) return false;
+    }
+    return true;
+  }
+
+  next_step() {
+    for(let snake of this.snakes) {
+      snake.next_step();
+    }
   }
 
   update_size() {
@@ -133,5 +186,10 @@ export default class GameMap extends GameObject {
   update() {
     this.update_size();
     this.update_grid();
+    if(this.check_snakes_ready()) {
+      this.next_step();
+    }
   }
 }
+
+GameMap.mapType = Object.freeze({"default": 0, "small": 1, "large": 3});
