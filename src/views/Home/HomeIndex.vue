@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import ContentBar from "../../components/ContentBar.vue";
+import ContentBar from "@/components/ContentBar.vue";
 
 export default {
   components: {

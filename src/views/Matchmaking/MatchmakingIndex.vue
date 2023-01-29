@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import PlayGround from "../../components/Matchmaking/PlayGround.vue";
+import PlayGround from "@/components/Matchmaking/PlayGround.vue";
 
 export default {
   components: {

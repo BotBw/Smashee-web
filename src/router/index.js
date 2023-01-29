@@ -3,6 +3,8 @@ import AboutView from '@/views/AboutView'
 import MatchmakingIndex from '@/views/Matchmaking/MatchmakingIndex'
 import NotFoundView from '@/views/Exceptions/NotFoundView'
 import HomeIndex from '@/views/Home/HomeIndex'
+import UserAccountLoginView from '@/views/User/Account/UserAccountLoginView'
+import UserAccountRegisterView from '@/views/User/Account/UserAccountRegisterView'
 
 const routes = [
   {
@@ -31,6 +33,16 @@ const routes = [
     path: '/notfound',
     name: 'NotFound',
     component: NotFoundView
+  },
+  {
+    path: '/user/account/login',
+    name: 'Login',
+    component: UserAccountLoginView
+  },
+  {
+    path: '/user/account/register',
+    name: 'Register',
+    component: UserAccountRegisterView
   },
   {
     path: '/:catchAll(.*)',

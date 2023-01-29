@@ -7,11 +7,28 @@
 import NavBar from "./components/NavBar.vue"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap/dist/js/bootstrap"
+// import $ from "jquery"
 
 export default {
   components: {
     NavBar
-  }
+  },
+  // setup() {
+  //   $.ajax({
+  //     url: "http://localhost:12345/user/account/getToken",
+  //     type: "POST",
+  //     data: {
+  //       usrname: "admin",
+  //       pwd: "1019"
+  //     },
+  //     success(resp) {
+  //       console.log(resp);
+  //     },
+  //     error(resp) {
+  //       console.log(resp)
+  //     }
+  //   })
+  // }
 }
 </script>
 
