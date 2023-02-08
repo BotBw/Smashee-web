@@ -24,6 +24,7 @@ export default {
       state.id = ""
       state.usrname = ""
       state.avatar = ""
+      localStorage.removeItem("JWT")
       state.JWT = ""
       state.is_login = false
     }
@@ -39,6 +40,7 @@ export default {
         },
         success(resp) {
           if (resp.MSG === "succeed") {
+            localStorage.setItem("JWT", resp.JWT)
             context.commit("updateToken", resp.JWT)
             data.success(resp)
           } else {
@@ -74,6 +76,7 @@ export default {
         },
         error(resp) {
           data.error(resp)
+          this.logout(context)
         }
       })
     }

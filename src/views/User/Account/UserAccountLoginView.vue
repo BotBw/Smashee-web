@@ -11,7 +11,7 @@
           </div>
 
           <div class="msg">{{ MSG }}</div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary">Login</button>
         </form>
       </div>
     </div>
@@ -30,7 +30,19 @@ export default {
   },
   setup() {
     const store = useStore();
-    let usrname = ref(''), pwd = ref(''), MSG = ref('');
+    let usrname = ref(""), pwd = ref(""), MSG = ref("");
+
+    const JWT = localStorage.getItem("JWT")
+    if(JWT) {
+      const store = useStore();
+      store.commit("updateToken", JWT);
+      store.dispatch("getinfo", {
+        success() {
+          router.push({name: "Home"})
+        },
+        error() {}
+      })
+    }
 
     const login = () => {
       store.dispatch("login", {

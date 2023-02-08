@@ -2,15 +2,15 @@
   <ContentBar>
     <div class="row justify-content-md-center">
       <div class="col-3">
-        <form>
+        <form @submit.prevent="register">
           <div class="mb-3">
-            <input type="text" id="usrname" class="form-control" placeholder="Username">
+            <input v-model="usrname" type="text" id="usrname" class="form-control" placeholder="Username">
           </div>
           <div class="mb-3">
-            <input type="password" id="pwd" class="form-control" placeholder="Password">
+            <input v-model="pwd" type="password" id="pwd" class="form-control" placeholder="Password">
           </div>
           <div class="mb-3">
-            <input type="password" id="confirmedPwd" class="form-control" placeholder="Confirm password">
+            <input v-model="confirmedPwd" type="password" id="confirmedPwd" class="form-control" placeholder="Confirm password">
           </div>
 
           <div class="mb-3">
@@ -21,25 +21,55 @@
               </label>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+
+          <div class="msg">{{ MSG }}</div>
+          <button class="btn btn-primary">Register</button>
         </form>
       </div>
     </div>
   </ContentBar>
 </template>
 
-<script>
+<script setup>
 import ContentBar from "@/components/ContentBar.vue";
+import { ref } from "vue"
+import router from "@/router";
+import $ from "jquery"
 
-export default {
-  components: {
-    ContentBar
-  }
+const usrname = ref("")
+const pwd = ref("")
+const confirmedPwd = ref("")
+const MSG = ref("")
+
+const register = () => {
+  $.ajax({
+        url: "http://localhost:12345/user/account/register",
+        type: "POST",
+        data: {
+          usrname: usrname.value,
+          pwd: pwd.value,
+          confirmedPwd: confirmedPwd.value
+        },
+        success(resp) {
+          if (resp.MSG === "succeed") {
+            router.push({name: "Login"})
+          } else {
+            MSG.value = resp.MSG
+          }
+        },
+        error(resp) {
+          MSG.value = resp.MSG
+        }
+      })
 }
 </script>
 
 <style scoped>
 button {
   width: 100%
+}
+
+div.msg {
+  color: red;
 }
 </style>
