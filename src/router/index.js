@@ -4,6 +4,7 @@ import MatchmakingIndex from '@/views/Matchmaking/MatchmakingIndex'
 import NotFoundView from '@/views/Exceptions/NotFoundView'
 import HomeIndex from '@/views/Home/HomeIndex'
 import RankingIndex from '@/views/Ranking/RankingIndex'
+import BotIndex from '@/views/Bots/BotIndex'
 import UserAccountLoginView from '@/views/User/Account/UserAccountLoginView'
 import UserAccountRegisterView from '@/views/User/Account/UserAccountRegisterView'
 import store from '@/store/index'
@@ -76,6 +77,15 @@ const routes = [
       requireAuthorization: false
     }
   },
+  {
+    path: '/bot',
+    name: 'Bot',
+    component: BotIndex,
+    meta: {
+      requireAuthorization: true
+    }
+  }
+  ,
   {
     path: '/:catchAll(.*)',
     name: 'defalt',

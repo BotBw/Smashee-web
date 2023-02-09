@@ -14,10 +14,10 @@
           <router-link class="nav-link" aria-current="page" to="/home">Home</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/matchmaking">Matchmaking</router-link>
+          <router-link class="nav-link" to="/bot">Bots</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/matches">Matches</router-link>
+          <router-link class="nav-link" to="/matchmaking">Matchmaking</router-link>
         </li>
         <li class="nav-item">
           <router-link class="nav-link" to="/ranking">Ranking</router-link>
