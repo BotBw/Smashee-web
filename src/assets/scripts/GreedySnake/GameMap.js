@@ -3,132 +3,127 @@ import { MapWall } from "./MapWall"
 import { Snake } from "./Snake";
 
 export default class GameMap extends GameObject {
-  constructor(ctx, parent, mapType) {
+  constructor(ctx, parent, wall_bool) {
     super();
     this.ctx = ctx;
     this.parent = parent;
     this.pixel = 0;
 
     this.color_a = "#AAD751"; // green
-    this.color_b = "#A2D149"; // green
+    this.color_b = "#A2D149"; // gree[w]
 
-    // default map settings
-    // row num and col num (it must satisfy (row + col) % 2 === 1)
-    let row = 13;
-    let col = 14;
-    // num of walls
-    let wall_cnt = 40;
-
-    if(mapType === GameMap.mapType.small) {
-      row = 10;
-      col = 11;
-      wall_cnt = 15;
-    } else if (mapType === GameMap.mapType.large) {
-      row = 20;
-      col = 21;
-      wall_cnt = 150;
-    }
-    this.row = row;
-    this.col = col;
-    this.wall_cnt = wall_cnt;
+    this.add_listening_event();
 
     this.walls = [];
-    this.timeout_cnt = 10000;
+    this.row = 13;
+    this.col = 14;
+
+    for(let i = 0; i < this.row; i++) {
+      for(let j = 0; j < this.col; j++) {
+        if(wall_bool[i][j]) 
+          this.walls.push(new MapWall(i, j, this));
+      }
+    }
+
     this.snakes = [new Snake(this, "#00CCFF", 1, 1, 3), new Snake(this, "#FF0066", this.row - 2, this.col - 2, 3)];
-    this.add_listening_event();
-    this.walls = this.generate_valid_walls();
+
+
+    
+    // this.wall_cnt = 40;
+    // this.timeout_cnt = 10000;
+    // this.walls = this.generate_valid_walls();
   }
 
-  generate_random_walls() {
-    const wall_cor = []; // true means there is a wall
-    for(let i = 0; i < this.row; i++) {
-      wall_cor.push([]);
-      for(let j = 0; j < this.col; j++) {
-        wall_cor[i].push(false);
-      }
-    }
-    // fill the corner and edge
-    for(let i = 0; i < this.row; i++) {
-      wall_cor[i][0] = wall_cor[i][this.col - 1] = true;
-    }
-    for(let i = 0; i < this.row; i++) {
-      wall_cor[0][i] = wall_cor[this.row - 1][i] = true;
-    }
+  // generate_random_walls() {
+  //   const wall_cor = []; // true means there is a wall
+  //   for(let i = 0; i < this.row; i++) {
+  //     wall_cor.push([]);
+  //     for(let j = 0; j < this.col; j++) {
+  //       wall_cor[i].push(false);
+  //     }
+  //   }
+  //   // fill the corner and edge
+  //   for(let i = 0; i < this.row; i++) {
+  //     wall_cor[i][0] = wall_cor[i][this.col - 1] = true;
+  //   }
+  //   for(let i = 0; i < this.row; i++) {
+  //     wall_cor[0][i] = wall_cor[this.row - 1][i] = true;
+  //   }
 
-    // randomly generate some walls 
-    let cnt = 0;
-    let timeout_cnt = 0;
-    while(cnt < this.wall_cnt/2 && timeout_cnt < this.timeout_cnt) {
-      timeout_cnt++;
-      let i = parseInt(this.row * Math.random());
-      let j = parseInt(this.col * Math.random());
-      if((i == 1 && j == 1) || (i == this.row - 2 && j == this.col - 2)) continue;
-      if(wall_cor[i][j] || wall_cor[this.row - i - 1][this.col - j - 1]) continue;
-      wall_cor[i][j] = wall_cor[this.row - i - 1][this.col - j - 1] = true;
-      cnt++;
-    }
-    return wall_cor;
-  }
+  //   // randomly generate some walls 
+  //   let cnt = 0;
+  //   let timeout_cnt = 0;
+  //   while(cnt < this.wall_cnt/2 && timeout_cnt < this.timeout_cnt) {
+  //     timeout_cnt++;
+  //     let i = parseInt(this.row * Math.random());
+  //     let j = parseInt(this.col * Math.random());
+  //     if((i == 1 && j == 1) || (i == this.row - 2 && j == this.col - 2)) continue;
+  //     if(wall_cor[i][j] || wall_cor[this.row - i - 1][this.col - j - 1]) continue;
+  //     wall_cor[i][j] = wall_cor[this.row - i - 1][this.col - j - 1] = true;
+  //     cnt++;
+  //   }
+  //   return wall_cor;
+  // }
 
-  check_walls(wall_cor) {
-    const dx = [-1, 0, 1, 0];
-    const dy = [0, 1, 0, -1];
-    let q = [];
-    const vis = [];
-    for(let i = 0; i < this.row; i++) {
-      vis.push([]);
-      for(let j = 0; j < this.col; j++) {
-        vis[i].push(false);
-      }
-    }
-    vis[1][1] = true;
-    q.push([1, 1]); 
-    while(q.length > 0) {
-      let frt = q.shift();
-      let x = frt[0], y = frt[1];
-      for(let k = 0; k < 4; k++) {
-        let xx = x + dx[k], yy = y + dy[k];
-        if(xx < 0 || yy < 0 || xx >= this.row || yy >= this.col || vis[xx][yy] || wall_cor[xx][yy]) continue;
-        if(xx == this.row - 2 && yy == this.col - 2) return true;
-        vis[xx][yy] = true;
-        q.push([xx, yy]);
-      }
-    }
-    return false;
-  }
+  // check_walls(wall_cor) {
+  //   const dx = [-1, 0, 1, 0];
+  //   const dy = [0, 1, 0, -1];
+  //   let q = [];
+  //   const vis = [];
+  //   for(let i = 0; i < this.row; i++) {
+  //     vis.push([]);
+  //     for(let j = 0; j < this.col; j++) {
+  //       vis[i].push(false);
+  //     }
+  //   }
+  //   vis[1][1] = true;
+  //   q.push([1, 1]); 
+  //   while(q.length > 0) {
+  //     let frt = q.shift();
+  //     let x = frt[0], y = frt[1];
+  //     for(let k = 0; k < 4; k++) {
+  //       let xx = x + dx[k], yy = y + dy[k];
+  //       if(xx < 0 || yy < 0 || xx >= this.row || yy >= this.col || vis[xx][yy] || wall_cor[xx][yy]) continue;
+  //       if(xx == this.row - 2 && yy == this.col - 2) return true;
+  //       vis[xx][yy] = true;
+  //       q.push([xx, yy]);
+  //     }
+  //   }
+  //   return false;
+  // }
   
-  generate_valid_walls() {
-    var wall_cor;
-    let walls = [];
-    let timeout_cnt = 0;
-    do {
-      wall_cor = this.generate_random_walls();
-      timeout_cnt++;
-    } while(!this.check_walls(wall_cor) && timeout_cnt < this.timeout_cnt);
+  // generate_valid_walls() {
+  //   var wall_cor;
+  //   let walls = [];
+  //   let timeout_cnt = 0;
+  //   do {
+  //     wall_cor = this.generate_random_walls();
+  //     timeout_cnt++;
+  //   } while(!this.check_walls(wall_cor) && timeout_cnt < this.timeout_cnt);
 
-    for(let i = 0; i < this.row; i++) {
-      for(let j = 0; j < this.col; j++) {
-        if(wall_cor[i][j]) 
-          walls.push(new MapWall(i, j, this));
-      }
-    }
-    return walls;
-  }
+  //   for(let i = 0; i < this.row; i++) {
+  //     for(let j = 0; j < this.col; j++) {
+  //       if(wall_cor[i][j]) 
+  //         walls.push(new MapWall(i, j, this));
+  //     }
+  //   }
+  //   return walls;
+  // }
 
-  check_valid(cell) {
-    for (const wall of this.walls) {
-      if(wall.x === cell.x && wall.y === cell.y) return false;
-    }
-    for(const snake of this.snakes) {
-      let n = snake.cells.length;
-      if(!snake.check_longer_snake()) n--;
-      for(let i = 0; i < n; i++) {
-        const c = snake.cells[i];
-        if(c.x === cell.x && c.y === cell.y) return false;
-      }
-    }
-    return true;
-  }
+  // check_valid(cell) {
+  //   for (const wall of this.walls) {
+  //     if(wall.x === cell.x && wall.y === cell.y) return false;
+  //   }
+  //   for(const snake of this.snakes) {
+  //     let n = snake.cells.length;
+  //     if(!snake.check_longer_snake()) n--;
+  //     for(let i = 0; i < n; i++) {
+  //       const c = snake.cells[i];
+  //       if(c.x === cell.x && c.y === cell.y) return false;
+  //     }
+  //   }
+  //   return true;
+  // }
 
 
   start() {}

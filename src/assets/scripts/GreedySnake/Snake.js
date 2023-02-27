@@ -80,7 +80,7 @@ export class Snake extends GameObject {
     if(this.state === Snake.StateEnum.died) ctx.fillStyle = "grey";
     for(let cell of this.cells) {
       ctx.beginPath();
-      ctx.arc((cell.y + 0.5) * pixel, (cell.x + 0.5) * pixel, pixel/2 - 1, 0, 2 * Math.PI);
+      ctx.arc((cell.y + 0.5) * pixel, (cell.x + 0.5) * pixel, pixel/2, 0, 2 * Math.PI);
       ctx.fill();
     }
     for(let i = 1; i < this.cells.length; i++) {

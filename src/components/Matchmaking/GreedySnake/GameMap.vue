@@ -4,27 +4,18 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, onMounted } from 'vue';
 import GameMap from '@/assets/scripts/GreedySnake/GameMap';
+import { useStore } from 'vuex';
 
-export default {
-  name: "GameMap",
+const store = useStore();
+let div = ref(null);
+let canvas = ref(null);
 
-  setup: () => {
-    let div = ref(null);
-    let canvas = ref(null);
-
-    onMounted(() => {
-      new GameMap(canvas.value.getContext('2d'), div.value, "default");
-    });
-
-    return {
-      div,
-      canvas
-    }
-  }
-}
+onMounted(() => {
+  new GameMap(canvas.value.getContext('2d'), div.value, store.state.matchmaking.map);
+});
 </script>
 
 

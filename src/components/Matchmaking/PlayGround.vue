@@ -1,24 +1,13 @@
 <template>
-  <div class="pg">
-    <GameMap></GameMap>
-  </div>
+  <OutLier>
+      <GameMap></GameMap>
+  </OutLier>
 </template>
 
-<script>
-import GameMap from "./GreedySnake/GameMap.vue"
-
-export default {
-    components: {
-      GameMap
-    }
-}
+<script setup>
+import GameMap from './GreedySnake/GameMap.vue';
+import OutLier from './OutLier.vue';
 </script>
 
 <style scoped>
-div.pg {
-  height: 80vh;
-  width: 80vw;
-  margin: 40px auto;
-  background-color: bisque;
-}
 </style>
