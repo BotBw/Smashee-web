@@ -12,7 +12,6 @@ export default class GameMap extends GameObject {
     this.color_a = "#AAD751"; // green
     this.color_b = "#A2D149"; // gree[w]
 
-    this.add_listening_event();
 
     this.walls = [];
     this.row = 13;
@@ -26,9 +25,9 @@ export default class GameMap extends GameObject {
     }
 
     this.snakes = [new Snake(this, "#00CCFF", 1, 1, 3), new Snake(this, "#FF0066", this.row - 2, this.col - 2, 3)];
-
-
     
+    this.add_listening_event();
+
     // this.wall_cnt = 40;
     // this.timeout_cnt = 10000;
     // this.walls = this.generate_valid_walls();
