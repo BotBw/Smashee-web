@@ -2,11 +2,13 @@ import { GameObject } from "../GameObject";
 import { MapWall } from "./MapWall"
 import { Snake } from "./Snake";
 
-export default class GameMap extends GameObject {
-  constructor(ctx, parent, wall_bool) {
+export default class GreedySnake extends GameObject {
+  constructor(ctx, parent, socket, wall_bool) {
     super();
     this.ctx = ctx;
     this.parent = parent;
+    this.socket = socket;
+
     this.pixel = 0;
 
     this.color_a = "#AAD751"; // green
@@ -109,20 +111,20 @@ export default class GameMap extends GameObject {
   //   return walls;
   // }
 
-  // check_valid(cell) {
-  //   for (const wall of this.walls) {
-  //     if(wall.x === cell.x && wall.y === cell.y) return false;
-  //   }
-  //   for(const snake of this.snakes) {
-  //     let n = snake.cells.length;
-  //     if(!snake.check_longer_snake()) n--;
-  //     for(let i = 0; i < n; i++) {
-  //       const c = snake.cells[i];
-  //       if(c.x === cell.x && c.y === cell.y) return false;
-  //     }
-  //   }
-  //   return true;
-  // }
+  check_valid(cell) {
+    for (const wall of this.walls) {
+      if(wall.x === cell.x && wall.y === cell.y) return false;
+    }
+    for(const snake of this.snakes) {
+      let n = snake.cells.length;
+      if(!snake.check_longer_snake()) n--;
+      for(let i = 0; i < n; i++) {
+        const c = snake.cells[i];
+        if(c.x === cell.x && c.y === cell.y) return false;
+      }
+    }
+    return true;
+  }
 
 
   start() {}
@@ -130,14 +132,24 @@ export default class GameMap extends GameObject {
   add_listening_event() {
     this.ctx.canvas.focus();
     const mapper = e => {
-      if(e.key === 'w') this.snakes[0].set_dir(0);
-      else if(e.key === 'd') this.snakes[0].set_dir(1);
-      else if(e.key === 's') this.snakes[0].set_dir(2);
-      else if(e.key === 'a') this.snakes[0].set_dir(3);
-      else if(e.key === 'ArrowUp') this.snakes[1].set_dir(0);
-      else if(e.key === 'ArrowRight') this.snakes[1].set_dir(1);
-      else if(e.key === 'ArrowDown') this.snakes[1].set_dir(2);
-      else this.snakes[1].set_dir(3);
+      if(e.key === 'w' || e.key === 'W') this.snakes[0].set_dir(0);
+      else if(e.key === 'd' || e.key === 'D') this.snakes[0].set_dir(1);
+      else if(e.key === 's' || e.key === 'S') this.snakes[0].set_dir(2);
+      else if(e.key === 'a' || e.key === 'A') this.snakes[0].set_dir(3);
+      
+      if(this.snakes[0].dir != -1) {
+        const dir = this.snakes[0].dir;
+        let direction = "";
+        if(dir === 0) direction = "UP";
+        else if(dir === 1) direction = "RIGHT";
+        else if(dir === 2) direction = "DOWN";
+        else if(dir === 3) direction = "LEFT";
+
+        this.socket.send(JSON.stringify({
+          event: "move",
+          direction: direction
+        }))
+      }
     };
     this.ctx.canvas.addEventListener("keydown", mapper);
   }
@@ -186,4 +198,4 @@ export default class GameMap extends GameObject {
   }
 }
 
-GameMap.mapType = Object.freeze({"default": 0, "small": 1, "large": 3});
+GreedySnake.mapType = Object.freeze({"default": 0, "small": 1, "large": 3});

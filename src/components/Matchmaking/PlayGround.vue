@@ -1,11 +1,11 @@
 <template>
   <OutLier>
-      <GameMap></GameMap>
+      <GameGround></GameGround>
   </OutLier>
 </template>
 
 <script setup>
-import GameMap from './GreedySnake/GameMap.vue';
+import GameGround from './GreedySnake/GameGround.vue';
 import OutLier from './OutLier.vue';
 </script>
 

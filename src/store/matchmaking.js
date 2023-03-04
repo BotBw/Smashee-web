@@ -7,7 +7,8 @@ export default {
       usrname: "",
       avatar: ""
     },
-    map: null
+    greedySnake: null,
+    gameInfo: null
   },
   getters: {
 
@@ -22,8 +23,11 @@ export default {
     setOpponent(state, opponent) {
       state.opponent = opponent;
     },
-    setMap(state, map) {
-      state.map = map;
+    setGreedySnake(state, greedySnake) {
+      state.greedySnake = greedySnake;
+    },
+    setGameInfo(state, gameInfo) {
+      state.gameInfo = gameInfo;
     }
   },
   actions: {

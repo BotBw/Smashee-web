@@ -17,6 +17,18 @@ export class Snake extends GameObject {
 
   start() {}
 
+  set_dir_string(dir_string) {
+    dir_string = dir_string.toUpperCase();
+    
+    let new_dir = -1;
+    if(dir_string === "UP") new_dir = 0;
+    else if(dir_string === "RIGHT") new_dir = 1;
+    else if(dir_string === "DOWN") new_dir = 2;
+    else if(dir_string === "LEFT") new_dir = 3;
+
+    this.set_dir(new_dir);
+  }
+
   set_dir(new_dir) {
     this.dir = new_dir
   }
@@ -38,7 +50,7 @@ export class Snake extends GameObject {
     this.state = Snake.StateEnum.moving;
     this.step++;
 
-    if(!this.map.check_valid(this.next_cell)) this.state = Snake.StateEnum.died;
+    // if(!this.map.check_valid(this.next_cell)) this.state = Snake.StateEnum.died;
   }
 
   update_move() {

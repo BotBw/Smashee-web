@@ -6,15 +6,17 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import GameMap from '@/assets/scripts/GreedySnake/GameMap';
 import { useStore } from 'vuex';
+import GreedySnake from '@/assets/scripts/GreedySnake/GreedySnake';
 
 const store = useStore();
 let div = ref(null);
 let canvas = ref(null);
 
 onMounted(() => {
-  new GameMap(canvas.value.getContext('2d'), div.value, store.state.matchmaking.map);
+  store.commit("setGreedySnake",
+    new GreedySnake(canvas.value.getContext('2d'), div.value, store.state.matchmaking.socket,store.state.matchmaking.gameInfo.map)
+  )
 });
 </script>
 
