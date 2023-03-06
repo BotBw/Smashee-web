@@ -49,8 +49,6 @@ export class Snake extends GameObject {
 
     this.state = Snake.StateEnum.moving;
     this.step++;
-
-    // if(!this.map.check_valid(this.next_cell)) this.state = Snake.StateEnum.died;
   }
 
   update_move() {
