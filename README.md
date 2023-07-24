@@ -1,4 +1,4 @@
-# Smashee-web
+# web
 
 ## Project setup
 ```

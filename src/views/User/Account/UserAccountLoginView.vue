@@ -1,82 +1,89 @@
 <template>
-    <ContentBar>
-    <div class="row justify-content-md-center">
-      <div class="col-3">
-        <form @submit.prevent="login">
-          <div class="mb-3">
-            <input v-model="usrname" type="text" id="usrname" class="form-control" placeholder="Username">
-          </div>
-          <div class="mb-3">
-            <input v-model="pwd" type="password" id="pwd" class="form-control" placeholder="Password">
-          </div>
-
-          <div class="msg">{{ MSG }}</div>
-          <button type="submit" class="btn btn-primary">Login</button>
-        </form>
-      </div>
-    </div>
-  </ContentBar>
+    <ContentField v-if="!$store.state.user.pulling_info">
+        <div class="row justify-content-md-center">
+            <div class="col-3">
+                <form @submit.prevent="login">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">用户名</label>
+                        <input v-model="username" type="text" class="form-control" id="username" placeholder="请输入用户名">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">密码</label>
+                        <input v-model="password" type="password" class="form-control" id="password" placeholder="请输入密码">
+                    </div>
+                    <div class="error-message">{{ error_message }}</div>
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </form>
+            </div>
+        </div>
+    </ContentField>
 </template>
 
 <script>
-import ContentBar from "@/components/ContentBar.vue";
-import { useStore } from "vuex";
-import { ref } from "vue";
-import router from "@/router";
+import ContentField from '../../../components/ContentField.vue'
+import { useStore } from 'vuex'
+import { ref } from 'vue'
+import router from '../../../router/index'
 
 export default {
-  components: {
-    ContentBar
-  },
-  setup() {
-    const store = useStore();
-    let usrname = ref(""), pwd = ref(""), MSG = ref("");
+    components: {
+        ContentField
+    },
+    setup() {
+        const store = useStore();
+        let username = ref('');
+        let password = ref('');
+        let error_message = ref('');
 
-    const JWT = localStorage.getItem("JWT")
-    if(JWT) {
-      const store = useStore();
-      store.commit("updateToken", JWT);
-      store.dispatch("getinfo", {
-        success() {
-          router.push({name: "Home"})
-        },
-        error() {}
-      })
-    }
-
-    const login = () => {
-      store.dispatch("login", {
-        usrname: usrname.value,
-        pwd: pwd.value,
-        success() {
-          MSG.value = ""
-          store.dispatch("getinfo", {
-            success() {
-              router.push({name: "Home"})
-            }
-          })
-        },
-        error() {
-          MSG.value = "username or password is wrong"
+        const jwt_token = localStorage.getItem("jwt_token");
+        if (jwt_token) {
+            store.commit("updateToken", jwt_token);
+            store.dispatch("getinfo", {
+                success() {
+                    router.push({ name: "home" });
+                    store.commit("updatePullingInfo", false);
+                },
+                error() {
+                    store.commit("updatePullingInfo", false);
+                }
+            })
+        } else {
+            store.commit("updatePullingInfo", false);
         }
-      })
-    };
 
-    return {
-      usrname, 
-      pwd,
-      MSG,
-      login
+        const login = () => {
+            error_message.value = "";
+            store.dispatch("login", {
+                username: username.value,
+                password: password.value,
+                success() {
+                    store.dispatch("getinfo", {
+                        success() {
+                            router.push({ name: 'home' });
+                        }
+                    })
+                },
+                error() {
+                    error_message.value = "用户名或密码错误";
+                }
+            })
+        }
+
+        return {
+            username,
+            password,
+            error_message,
+            login,
+        }
     }
-  }
 }
 </script>
 
 <style scoped>
 button {
-  width: 100%;
+    width: 100%;
 }
-div.msg {
-  color: red;
+div.error-message {
+    color: red;
 }
 </style>

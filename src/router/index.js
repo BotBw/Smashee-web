@@ -1,95 +1,90 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import AboutView from '@/views/AboutView'
-import MatchmakingIndex from '@/views/Matchmaking/MatchmakingIndex'
-import NotFoundView from '@/views/Exceptions/NotFoundView'
-import HomeIndex from '@/views/Home/HomeIndex'
-import RankingIndex from '@/views/Ranking/RankingIndex'
-import BotIndex from '@/views/Bots/BotIndex'
-import UserAccountLoginView from '@/views/User/Account/UserAccountLoginView'
-import UserAccountRegisterView from '@/views/User/Account/UserAccountRegisterView'
-import store from '@/store/index'
+import PkIndexView from '../views/pk/PkIndexView'
+import RecordIndexView from '../views/record/RecordIndexView'
+import RecordContentView from '../views/record/RecordContentView'
+import RanklistIndexView from '../views/ranklist/RanklistIndexView'
+import UserBotIndexView from '../views/user/bot/UserBotIndexView'
+import NotFound from '../views/error/NotFound'
+import UserAccountLoginView from '../views/user/account/UserAccountLoginView'
+import UserAccountRegisterView from '../views/user/account/UserAccountRegisterView'
+import store from '../store/index'
 
 const routes = [
   {
-    path: '/',
-    redirect: '/home',
+    path: "/",
+    name: "home",
+    redirect: "/pk/",
     meta: {
-      requireAuthorization: false
+      requestAuth: true,
     }
   },
   {
-    path: '/home',
-    name: 'Home',
-    component: HomeIndex
-    ,
+    path: "/pk/",
+    name: "pk_index",
+    component: PkIndexView,
     meta: {
-      requireAuthorization: false
+      requestAuth: true,
     }
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: AboutView,
+    path: "/record/",
+    name: "record_index",
+    component: RecordIndexView,
     meta: {
-      requireAuthorization: false
+      requestAuth: true,
     }
   },
   {
-    path: '/matchmaking',
-    name: 'Matchmaking',
-    component: MatchmakingIndex,
+    path: "/record/:recordId/",
+    name: "record_content",
+    component: RecordContentView,
     meta: {
-      requireAuthorization: true
+      requestAuth: true,
     }
   },
   {
-    path: '/ranking',
-    name: 'Ranking',
-    component: RankingIndex,
+    path: "/ranklist/",
+    name: "ranklist_index",
+    component: RanklistIndexView,
     meta: {
-      requireAuthorization: true
+      requestAuth: true,
     }
   },
   {
-    path: '/notfound',
-    name: 'NotFound',
-    component: NotFoundView,
+    path: "/user/bot/",
+    name: "user_bot_index",
+    component: UserBotIndexView,
     meta: {
-      requireAuthorization: false
+      requestAuth: true,
     }
   },
   {
-    path: '/user/account/login',
-    name: 'Login',
+    path: "/user/account/login/",
+    name: "user_account_login",
     component: UserAccountLoginView,
     meta: {
-      requireAuthorization: false
+      requestAuth: false,
     }
   },
   {
-    path: '/user/account/register',
-    name: 'Register',
+    path: "/user/account/register/",
+    name: "user_account_register",
     component: UserAccountRegisterView,
     meta: {
-      requireAuthorization: false
+      requestAuth: false,
     }
   },
   {
-    path: '/bot',
-    name: 'Bot',
-    component: BotIndex,
+    path: "/404/",
+    name: "404",
+    component: NotFound,
     meta: {
-      requireAuthorization: true
+      requestAuth: false,
     }
-  }
-  ,
+  },
   {
-    path: '/:catchAll(.*)',
-    name: 'defalt',
-    redirect: '/NotFound'
+    path: "/:catchAll(.*)",
+    redirect: "/404/"
   }
 ]
 
@@ -99,10 +94,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if(to.meta.requireAuthorization && !store.state.user.is_login) {
-    next({name: "Login"})
+  if (to.meta.requestAuth && !store.state.user.is_login) {
+    next({name: "user_account_login"});
   } else {
-    next()
+    next();
   }
 })
 

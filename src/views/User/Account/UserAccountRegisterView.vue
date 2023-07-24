@@ -1,75 +1,80 @@
 <template>
-  <ContentBar>
-    <div class="row justify-content-md-center">
-      <div class="col-3">
-        <form @submit.prevent="register">
-          <div class="mb-3">
-            <input v-model="usrname" type="text" id="usrname" class="form-control" placeholder="Username">
-          </div>
-          <div class="mb-3">
-            <input v-model="pwd" type="password" id="pwd" class="form-control" placeholder="Password">
-          </div>
-          <div class="mb-3">
-            <input v-model="confirmedPwd" type="password" id="confirmedPwd" class="form-control" placeholder="Confirm password">
-          </div>
-
-          <div class="mb-3">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="termCheck">
-              <label class="form-check-label" for="termCheck">
-                By clicking this box I agree to any term of use (if any).
-              </label>
+    <ContentField>
+        <div class="row justify-content-md-center">
+            <div class="col-3">
+                <form @submit.prevent="register">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">用户名</label>
+                        <input v-model="username" type="text" class="form-control" id="username" placeholder="请输入用户名">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">密码</label>
+                        <input v-model="password" type="password" class="form-control" id="password" placeholder="请输入密码">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmedPassword" class="form-label">确认密码</label>
+                        <input v-model="confirmedPassword" type="password" class="form-control" id="confirmedPassword" placeholder="请再次输入密码">
+                    </div>
+                    <div class="error-message">{{ error_message }}</div>
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </form>
             </div>
-          </div>
-
-          <div class="msg">{{ MSG }}</div>
-          <button class="btn btn-primary">Register</button>
-        </form>
-      </div>
-    </div>
-  </ContentBar>
+        </div>
+    </ContentField>
 </template>
 
-<script setup>
-import ContentBar from "@/components/ContentBar.vue";
-import { ref } from "vue"
-import router from "@/router";
-import $ from "jquery"
+<script>
+import ContentField from '../../../components/ContentField.vue'
+import { ref } from 'vue'
+import router from '../../../router/index'
+import $ from 'jquery'
 
-const usrname = ref("")
-const pwd = ref("")
-const confirmedPwd = ref("")
-const MSG = ref("")
+export default {
+    components: {
+        ContentField
+    },
+    setup() {
+        let username = ref('');
+        let password = ref('');
+        let confirmedPassword = ref('');
+        let error_message = ref('');
 
-const register = () => {
-  $.ajax({
-        url: "http://localhost:12345/user/account/register",
-        type: "POST",
-        data: {
-          usrname: usrname.value,
-          pwd: pwd.value,
-          confirmedPwd: confirmedPwd.value
-        },
-        success(resp) {
-          if (resp.MSG === "succeed") {
-            router.push({name: "Login"})
-          } else {
-            MSG.value = resp.MSG
-          }
-        },
-        error(resp) {
-          MSG.value = resp.MSG
+        const register = () => {
+            $.ajax({
+                url: "https://app2703.acapp.acwing.com.cn/api/user/account/register/",
+                type: "post",
+                data: {
+                    username: username.value,
+                    password: password.value,
+                    confirmedPassword: confirmedPassword.value,
+                },
+                success(resp) {
+                    if (resp.error_message === "success") {
+                        router.push({name: "user_account_login"});
+                    } else {
+                        error_message.value = resp.error_message;
+                    }
+                },
+            });
         }
-      })
+
+        return {
+            username,
+            password,
+            confirmedPassword,
+            error_message,
+            register,
+        }
+    }
 }
 </script>
 
 <style scoped>
 button {
-  width: 100%
+    width: 100%;
 }
 
-div.msg {
-  color: red;
+div.error-message {
+    color: red;
 }
 </style>
