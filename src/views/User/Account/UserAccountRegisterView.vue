@@ -41,7 +41,7 @@ export default {
 
         const register = () => {
             $.ajax({
-                url: "https://app2703.acapp.acwing.com.cn/api/user/account/register/",
+                url: "http://121.41.170.64:3000/api/user/account/register/",
                 type: "post",
                 data: {
                     username: username.value,
@@ -55,6 +55,9 @@ export default {
                         error_message.value = resp.error_message;
                     }
                 },
+                error(resp) {
+                  console.log(resp);
+                }
             });
         }
 

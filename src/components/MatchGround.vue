@@ -12,7 +12,7 @@
             <div class="col-4">
                 <div class="user-select-bot">
                     <select v-model="select_bot" class="form-select" aria-label="Default select example">
-                        <option value="-1" selected>亲自出马</option>
+                        <option value="-1" selected>Human control</option>
                         <option v-for="bot in bots" :key="bot.id" :value="bot.id">
                             {{ bot.title }}
                         </option>
@@ -42,19 +42,19 @@ import $ from 'jquery';
 export default {
     setup() {
         const store = useStore();
-        let match_btn_info = ref("开始匹配");
+        let match_btn_info = ref("Start matching");
         let bots = ref([]);
         let select_bot = ref("-1");
 
         const click_match_btn = () => {
-            if (match_btn_info.value === "开始匹配") {
-                match_btn_info.value = "取消";
+            if (match_btn_info.value === "Start matching") {
+                match_btn_info.value = "Cancel";
                 store.state.pk.socket.send(JSON.stringify({
                     event: "start-matching",
                     bot_id: select_bot.value,
                 }));
             } else {
-                match_btn_info.value = "开始匹配";
+                match_btn_info.value = "Start matching";
                 store.state.pk.socket.send(JSON.stringify({
                     event: "stop-matching",
                 }));
@@ -63,7 +63,7 @@ export default {
 
         const refresh_bots = () => {
             $.ajax({
-                url: "https://app2703.acapp.acwing.com.cn/api/user/bot/getlist/",
+                url: "http://121.41.170.64:3000/api/user/bot/getlist/",
                 type: "get",
                 headers: {
                     Authorization: "Bearer " + store.state.user.token,

@@ -31,7 +31,7 @@ export default {
             store.commit("updateStatus", "matching");
             store.commit("updateLoser", "none");
             store.commit("updateOpponent", {
-                username: "我的对手",
+                username: "Opponent",
                 photo: "https://static.vecteezy.com/system/resources/previews/000/440/213/original/question-mark-vector-icon.jpg",
             })
         }

@@ -2,8 +2,8 @@
     <PlayGround v-if="$store.state.pk.status === 'playing'" />
     <MatchGround v-if="$store.state.pk.status === 'matching'" />
     <ResultBoard v-if="$store.state.pk.loser != 'none'" />
-    <div class="user-color" v-if="$store.state.pk.status === 'playing' && parseInt($store.state.user.id) === parseInt($store.state.pk.a_id)">左下角</div>
-    <div class="user-color" v-if="$store.state.pk.status === 'playing' && parseInt($store.state.user.id) === parseInt($store.state.pk.b_id)">右上角</div>
+    <div class="user-color" v-if="$store.state.pk.status === 'playing' && parseInt($store.state.user.id) === parseInt($store.state.pk.a_id)">You are bottom-left</div>
+    <div class="user-color" v-if="$store.state.pk.status === 'playing' && parseInt($store.state.user.id) === parseInt($store.state.pk.b_id)">You are top-right</div>
 </template>
 
 <script>
@@ -21,7 +21,7 @@ export default {
     },
     setup() {
         const store = useStore();
-        const socketUrl = `wss://app2703.acapp.acwing.com.cn/websocket/${store.state.user.token}/`;
+        const socketUrl = `ws://121.41.170.64:3000/websocket/${store.state.user.token}/`;
 
         store.commit("updateLoser", "none");
         store.commit("updateIsRecord", false);
@@ -29,7 +29,7 @@ export default {
         let socket = null;
         onMounted(() => {
             store.commit("updateOpponent", {
-                username: "我的对手",
+                username: "Opponent",
                 photo: "https://static.vecteezy.com/system/resources/previews/000/440/213/original/question-mark-vector-icon.jpg",
             })
             socket = new WebSocket(socketUrl);
