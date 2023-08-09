@@ -14,7 +14,7 @@
         </div>
         <div class="result-board-btn">
             <button @click="restart" type="button" class="btn btn-warning btn-lg">
-                再来!
+                One more game!
             </button>
         </div>
     </div>    
