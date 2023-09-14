@@ -1,3 +1,6 @@
+# HOST
+Hosted [here](http://ali1.botbw.xyz/)
+
 # web
 
 ## Project setup
